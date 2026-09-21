@@ -474,7 +474,7 @@ public class MathUtil {
                 var exponResDec = binaryToDecimal(ixArr);
                 System.out.println("invalid numbers expBinRunIx:" + exponResDec);
                 return Map.of("d", ixArr, "result", -1, "exponResArr", exponResArr, "exponResDec", exponResDec,
-                              "ixArr", ixArr, "ix", ix);
+                        "ixArr", ixArr, "ix", ix);
             }
 
             if (solve2Res == 1) {
@@ -2632,13 +2632,69 @@ public class MathUtil {
     }
 
     // ver1
-    public static int[] decimalToBinary(String numberStr) {
+    public static String[] defaultBinaryNumbers() {
+        return new String[] { "0000", "0001", "0010", "0011", "0100", "0101", "0110", "0111", "1000", "1001", "1010" };
+    }
+
+    public enum Decimal {
+       _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10
+    }
+
+    public static int[] binaryOf(Decimal decimalNumber) {
+        var dnum = decimalNumber.name().replace("_", "");
+        return stringToIntArray(String.valueOf(defaultBinaryNumbers()[Integer.valueOf(dnum)]));
+    }
+
+    private static int[] binaryOf(int dnum) {
+        return stringToIntArray(String.valueOf(defaultBinaryNumbers()[dnum]));
+    }
+
+    // ver1
+    public static int[] decimalToBinary(String dnumStr) throws Exception {
+        int[] finalArr = new int[0];
+        int[] dNumArr = stringToIntArray(dnumStr);
+        // 546
+
+        var ix = 0;
+        var ndecpow = dNumArr.length - 1;
+        // var p3 = new int[dNumArr.length][];
+        var p3 = new int[0];
+        var p4 = new int[0];
+        while (ix != dNumArr.length) {
+            // var p1 = dNumArr[ix];
+            var p1 = binaryOf(dNumArr[ix]);
+
+            var ndecIx = 0;
+            var p2 = binaryOf(1);
+            //ndecIx != ndecpow
+            while (solve_(ndecIx, ndecpow) != 0) {
+                p2 = multiplyTwoBinaryNumbers(binaryOf(10), p2, 0);
+                ndecIx += 1;
+            }
+
+            // p3 = addToIntArray2D(p3, multiplyTwoBinaryNumbers(p1, p2, 1));
+            p3 = multiplyTwoBinaryNumbers(p1, p2, 0);
+
+            if (p4.length == 0) {
+                p4 = new int[p3.length];
+            }
+            p4 = addTwoBinaryNumbers(p4, p3, 0);
+
+            ndecpow -= 1;
+            ix += 1;
+        }
+
+        return trimZeroes(p4, TrimDirection.Leading);
+    }
+
+    // ver1
+    public static int[] decimalToBinary0(String numberStr) {
         int[] finalArr = new int[0];
         int[] dNumArr = stringToIntArray(numberStr);
-    
+
         var base2Arr = MathUtil.stringToIntArray(Integer.toBinaryString(2));
-       // var res1Map = MathUtil.exponentBinary(binResArr, base2Arr);
-        //var exponRes1Dec = res1Map.get("exponResDec");
+        // var res1Map = MathUtil.exponentBinary(binResArr, base2Arr);
+        // var exponRes1Dec = res1Map.get("exponResDec");
 
         var ix = 0;
         while (ix != dNumArr.length) {
@@ -3410,11 +3466,11 @@ public class MathUtil {
 
         // int last = from;
         // for (int i = 0; i < size; i++) {
-        //     if (dir > 0) {
-        //         last += progfactorC;
-        //     } else if (dir < 0) {
-        //         last -= progfactorC;
-        //     }
+        // if (dir > 0) {
+        // last += progfactorC;
+        // } else if (dir < 0) {
+        // last -= progfactorC;
+        // }
 
         // }
 
@@ -3424,23 +3480,23 @@ public class MathUtil {
             finalArr[ix] = progfactor == 0 ? 0 : inc; // addToIntArray(finalArr, progfactor == 0 ? 0 : inc);
             if (dir == 1) {
 
-                if(progtype == 1){
+                if (progtype == 1) {
                     inc = progfactor > 1 ? inc + progfactor : ++inc;
-                } else if(progtype == 2){
+                } else if (progtype == 2) {
                     inc = progfactor > 1 ? inc * progfactor : ++inc;
                 } else {
                     break;
                 }
-                
+
                 // if (inc >= last) {
-                //     // eol = 1;
-                //     break;
+                // // eol = 1;
+                // break;
                 // }
             } else if (dir == -1) {
                 inc = progfactor > 1 ? inc - progfactor : --inc;
                 // if (inc <= last) {
-                //     // eol = 1;
-                //     break;
+                // // eol = 1;
+                // break;
                 // }
             } else {
 
@@ -3616,6 +3672,21 @@ public class MathUtil {
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+
+        return new String(strByteArr);
+
+    }
+
+
+    public static String intArrayToString(int[] mainArr) {
+
+        var ix = 0;
+        byte[] strByteArr = new byte[mainArr.length];
+        while (ix != mainArr.length) {
+            var x = mainArr[ix] + "";
+            System.arraycopy(x.getBytes(), 0, strByteArr, ix, x.length());
+            ix += 1;
         }
 
         return new String(strByteArr);

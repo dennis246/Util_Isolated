@@ -3109,7 +3109,7 @@ public class StringUtil {
                         obj instanceof short ||
                         obj instanceof int ||
                         obj instanceof long || obj instanceof String ||
-                        obj instanceof Integer || obj instanceof BigInteger) {
+                        obj instanceof Integer || obj instanceof BigInteger || obj instanceof Boolean) {
 
                     var objStr = obj.toString();
 
